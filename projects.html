@@ -119,7 +119,7 @@
                 rate as the predicted y value.
                 <br><br>
                 First, I combined all the features into one large features dataframe. I was initially considering adding polynomial features and performing PCA
-                to narrow down the feature space, but after performing train-test split, my number of data points and number of features became comaparable and I did not
+                to narrow down the feature space, but after performing train-test split, my number of data points and number of features became comparable and I did not
                 want to risk having too many features.
                 <br><br>
                 Next, I looked at the correlations between the y data and each of the features. By using the pandas .coor() function, I obtained a list of
@@ -227,7 +227,7 @@ Name: value, dtype: float64</code>
                 data fed into the pipeline. For processing the data for a regression model, my sklearn pipeline consists of the
                 SimpleImputer and StandardScaler.
                 <br><br>
-                The <b>SimpleImputer</b> is a transformer provided by sklearn that helps to full in null values. By specifying the strategy
+                The <b>SimpleImputer</b> is a transformer provided by sklearn that helps to fill in null values. By specifying the strategy
                 as "mean", I am filling in the null values with the mean of all the other values in the column. However, much of the null
                 values in the data have already been handled in an earlier part to obtain additional features through linear regression,
                 thus the Imputer here is for additional checking for null values, and to process future data. The <b>StandardScaler</b>
