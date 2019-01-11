@@ -219,6 +219,119 @@ Name: value, dtype: float64</code>
                 </pre>
               </div>
             </div>
+            <div class="post-part">
+              <h3>Step 4: Pipeline</h3>
+              <p>
+                A pipeline is a series of transformers applied to the data before it is used for training a model. Each transformer
+                has a fit() and transform() function (as explained in SKLearn Tips and Tricks) and are applied sequentially on the
+                data fed into the pipeline. For processing the data for a regression model, my sklearn pipeline consists of the
+                SimpleImputer and StandardScaler.
+                <br><br>
+                The <b>SimpleImputer</b> is a transformer provided by sklearn that helps to full in null values. By specifying the strategy
+                as "mean", I am filling in the null values with the mean of all the other values in the column. However, much of the null
+                values in the data have already been handled in an earlier part to obtain additional features through linear regression,
+                thus the Imputer here is for additional checking for null values, and to process future data. The <b>StandardScaler</b>
+                scales the data to a certain mean and range. Of the two available strategies, standard-deviation and min-max, I chose to implement
+                the stndard-deviation strategy as it is less affected by outliers.
+              </p>
+            </div>
+            <div class="post-part">
+              <h3>Step 5: Testing Regression Methods</h3>
+              <p>
+                After preparing the data for the various sklearn regressions, it is now easy to test out the data
+                on multiple kinds of regression models. The few that I have chosen are: linear regression, decision tree
+                regressor, random forest regressor and SVM regressor (with linear, poly, rbf and sigmoid kernels). I decided
+                against a polynomial regression as the large number of features will make the number of combinations
+                expand very rapidly, and my data set will become much smaller than the number of features (resulting in the
+                curse of dimentionality).
+                <br><br>
+                After training the training data using the models stated above, I evaluated the error of the models on the
+                training data itself:
+              </p>
+              <div class="code">
+                <pre class="command-line" data-user="kait" data-host="localhost" data-output="2-4, 6-9">
+<code class="language-bash">python3 -c 'import regression_methods; InitialRegression(training_set_err)'
+Error on training set for linear regression: 2.764433037591714e-16
+Error on training set for decision tree regressor: 0.0
+Error on training set for random forest regressor: 0.02825774230188955
+python3 -c 'import regression_methods;InitialRegressionSVM(training_set_err)'
+Error on training set for SVM linear regression: 0.07440866416057071
+Error on training set for SVM poly regression: 0.07199860703890534
+Error on training set for SVM rbf regression: 0.08604743906320432
+Error on training set for SVM sigmoid regression: 0.07307290024471638</code>
+                </pre>
+              </div>
+              <p>
+                It can be seen that the linear regression and decision tree regressor appear to overfit the training data quite
+                badly, resulting in an extremely small error. Further evaluation of the models are done with a Leave-One-Out cross
+                validation test (a comparison of LOOC and K-Out CV can be found on the Machine Learning Tips page) and errors are as
+                shown:
+              </p>
+              <div class="code">
+                <pre class="command-line" data-user="kait" data-host="localhost" data-output="2-20, 22-48">
+<code class="language-bash">python3 -c 'import regression_methods; InitialRegression(cross_validation_err)'
+Cross Validation error for linear regression:
+Scores:  [0.054842   0.00399597 0.03568356 0.13978444 0.04281256 0.04604125 0.05829293
+ 0.07240102 0.01860834 0.00776581 0.01481755 0.00364524 0.05873764 0.02579565 0.09859207
+ 0.15252078 0.07862143 0.00330323 0.07660888 0.53208627]
+Mean:  0.07624783154544243
+Standard deviation:  0.11248767941765023
+
+Cross Validation error for decision tree regressor:
+Scores:  [0.21 0.08 0.05 0.14 0.1  0.   0.1  0.01 0.18 0.06 0.06 0.06 0.04 0.03 0.04 0.19
+ 0.1  0.06 0.05 0.11]
+Mean:  0.0835
+Standard deviation:  0.05694514904713128
+
+Cross Validation error for random forest regressor:
+Scores:  [0.111 0.109 0.08  0.02  0.035 0.03  0.067 0.054 0.035 0.073 0.053 0.001 0.064
+ 0.114 0.089 0.005 0.036 0.02  0.024 0.044]
+Mean:  0.05319999999999999
+Standard deviation:  0.0335687354542884
+
+python3 -c 'import regression_methods;InitialRegressionSVM(training_set_err)'
+Cross Validation error for SVM linear regression:
+Scores:  [0.09080374 0.11937214 0.07250952 0.02995561 0.1213769  0.07664682 0.01063642
+ 0.0770035  0.11281128 0.12311391 0.0753716  0.05734756 0.15617136 0.05845668 0.01405324
+ 0.06087444 0.03156834 0.08382428 0.0609033  0.05759235]
+Mean:  0.07451965069118438
+Standard deviation:  0.03731505145643753
+
+Cross Validation error for SVM poly regression:
+Scores:  [0.0639619  0.08832214 0.06911489 0.00294872 0.14626911 0.06799292 0.01059334
+ 0.14858441 0.22023286 0.16793713 0.07181147 0.04379031 0.17939204 0.04106339 0.01160151
+ 0.14913094 0.0542449  0.04976189 0.07783498 0.05844717]
+Mean:  0.0861518011138705
+Standard deviation:  0.059731644134825415
+
+Cross Validation error for SVM rbf regression:
+Scores:  [0.09845441 0.18313329 0.10534654 0.07050253 0.15375965 0.09234144 0.05357059
+ 0.10884812 0.13208508 0.10881556 0.18629143 0.07108267 0.18490334 0.19231357 0.00442793
+ 0.07041296 0.01779497 0.08402715 0.10365277 0.08741709]
+Mean:  0.10545905412234675
+Standard deviation:  0.05230333381419113
+
+Cross Validation error for SVM sigmoid regression:
+Scores:  [0.10538674 0.10699255 0.06575242 0.01325729 0.10146539 0.07935778 0.01314629
+ 0.04998052 0.08224383 0.11372819 0.0610924  0.05436151 0.14048255 0.07774499 0.01526464
+ 0.04585146 0.00466904 0.0826025 0.06211805 0.08907408]
+Mean:  0.0682286110514455
+Standard deviation:  0.03629890887323988</code>
+                </pre>
+              </div>
+              <p>
+                It can be seen that the error on the cross validation test for the linear regression and
+                decision tree regressor is much larger (of multiple orders of magnitude) than the error on
+                the whole training set, showing that the linear regression and decision tree regressor has indeed
+                badly overfitted the training data.
+                <br><br>
+                After performing the training and cross validation for each regression method,
+                I decided to go with the <b>Random Forest Regressor</b> (CV error: 0.0531±0.0335) as top
+                choice and the <b>SVM sigmoid regression</b> (CV error: 0.0682±0.0362) as second choice for proceeding
+                with the fine-tuning of the models.
+              </p>
+            </div>
+
           </div>
         </div>
       </div>
