@@ -1,0 +1,142 @@
+#wrapper{
+ width:100%;
+}
+
+#header {
+  background-color: #FEDCD2;
+  padding: 10px 0 0 0;
+}
+
+#header h1{
+  text-align: center;
+}
+
+#header h5{
+  text-align: center;
+}
+
+nav.navigation {
+  display: block;
+}
+
+nav.navigation ul {
+  list-style-type: none; /* Removes the bullets */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e7e7e7;
+  background-color: #f3f3f3;
+  /* make it sticky at the top */
+  position: sticky;
+  top: 0;
+}
+
+nav.navigation ul li {
+  float: left;
+}
+
+nav.navigation ul li.active {
+  background-color: #DF744A;
+}
+
+nav.navigation ul li a {
+  display: block;
+  padding: 8px;
+  text-align: left;
+  color: #666;
+  text-decoration: none;
+}
+
+nav.navigation ul li a:hover {
+  background-color: #bab9b9;
+}
+
+nav.navigation ul li.active a:hover {
+  background-color: #DF744A;
+}
+
+nav.navigation ul li.active a {
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+/* page Content */
+#content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 20px;
+  min-height: 500px;
+  background-color: #eff6ff;
+}
+
+#left-sidebar {
+  width: 20%;
+  margin: 50px 10px 50px 50px;
+  background: #ffffff;
+  min-height: 500px;
+  text-align: center;
+}
+
+#right {
+  width: 80%;
+  margin: 50px 50px 10px 50px;
+  background: #ffffff;
+  text-align: center;
+  min-height: 500px;
+}
+
+#right p {
+  padding: 0px 30px 0px 30px;
+  text-align: justify;
+}
+
+#right li {
+  text-align: left;
+}
+
+.code {
+  margin: 0 30px 0 30px;
+}
+
+.post-cards {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.post-cards > div {
+  margin: 10px;
+  padding: 10px;
+}
+
+.post-title {
+  background: #ffffff;
+  text-align: center;
+  border-bottom: solid;
+}
+
+.post-part {
+  background: #ffffff;
+  text-align: justify;
+  border-bottom: solid;
+  border-color: #e5e5e5;
+}
+
+.post-part img {
+  max-width: 100%;
+}
+
+.post-part h3 {
+  text-align: center;
+}
+
+#feattransimages .img-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#feattransimages .img-container img {
+  max-width: 50%;
+}

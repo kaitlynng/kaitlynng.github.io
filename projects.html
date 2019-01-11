@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="themes/styles.css" rel="stylesheet" type="text/css" media="all">
+    <link href="themes/prism.css" rel="stylesheet" />
+    <link rel="stylesheet" href="themes/prism-command-line.css" />
+    <title>Python Machine Learning</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <header id="header">
+        <h1>Python Machine Learning</h1>
+        <h5>I have a website just to look cool.</h5>
+        <nav class="navigation">
+          <ul>
+            <li><a href="index.html">>Home</a></li>
+            <li class="active"><a href="projects.html">Projects</a></li>
+            <li><a href="mltips.html">Machine Learning Tips and Tricks</a></li>
+            <li><a href="pythontips.html">Python Tips and Tricks</a></li>
+            <li><a href="sklearntips.html">Sklearn Tips and Tricks</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div id="content">
+        <div id="left-sidebar">
+          <p>Left Sidebar Content Goes Here</p>
+        </div>
+
+        <div id="right">
+          <div class="post-cards">
+            <div class="post-title">
+              <h2>Predict Marriages and Birth Rates with Economic Data (the Long Way)</h2>
+              <p>
+                This project aims to predict Singapore's number of marriages and crude birth rate using economic data.
+                This guide provides a step-by-step approach to every mistake I have made, so take this tutorial with a
+                pinch of salt.
+              </p>
+            </div>
+            <div class="post-part">
+              <h3>Step 1: Choosing features</h3>
+              <p>The first step to a good machine learning model is always to choose the right features for your predictions.
+                My original intentions had been to select a mix of both social and economic indicators and compare their
+                relative accuracy in predicting birth rates/marriages, and also to combine some of these factors to obtain
+                socio-economic indicators.
+                <br><br>
+                For Singapore data, a few of the sites that I consulted are:
+              </p>
+              <ul>
+                <li><a href="https://data.gov.sg/">Data.gov</a>: ended up being my only source of data</li>
+                <li><a href="https://www.singstat.gov.sg/find-data">Singstat</a>: datasets tended to be too small</li>
+                <li><a href="https://www.mytransport.sg/content/mytransport/home/dataMall.html"> LTA Data Mall</a>: I was impressed by the amount of data, but not relevant</li>
+                <li>Many other <a href="https://www.smartnation.sg/resources/open-data-resources">open source data</a> on Singapore that was sadly irrelevant</li>
+              </ul>
+              <p>
+                A big drawback for me was that I could not find any datasets on social indicators that went far enough back
+                (at least 1995) for me to have a sizeable dataset. While kind of comprehensive, the data on data.gov was also lacking in
+                data with causal relationships, making it difficult to explore predictive models using the available data.
+                <br><br>
+                In the end, I settled with what I had (for now):
+                <br><br>
+                <b>X data:</b>
+              </p>
+              <ol>
+                <li>Year (I was expecting this to be a problem due to correlation issues)</li>
+                <li>Consumer Price Index, Monthly</li>
+                <li>Gross Domestic Product at Current Market Prices, Annually</li>
+                <li>Job Vacancy Rate, Quarterly</li>
+                <li>Resident Unemployment Rate, Quarterly</li>
+                <li>Average Weekly Paid Overtime Hours per Employee, Quarterly</li>
+              </ol>
+              <p><b>Y data</b></p>
+              <ol>
+                <li>Crude Birth Rates, Annually</li>
+                <li>Marriages under the Womens' Charter, Annually</li>
+              </ol>
+              <p>
+                All the data was obtained from data.gov in csv file format.
+              </p>
+            </div>
+            <div class="post-part">
+              <h3>Step 2: Cleaning the Data</h3>
+              <p>
+                Cleaning the data proved to be more problematic than I thought it would be. Since the predicted values are annual data, I
+                decided to process the quarterly and monthly data to return annual figures of [mean, standard deviation, direction, correlation].
+                "Direction" and "Correlation" will be elaborated on more later.
+                <br><br>
+                I used the pandas dataframe for data processing. It was a pain to pick up, but ultimately useful as it is an organised
+                way to handle data that can be extended to large datasets, and has many built-in functions that make data processing
+                not that difficult (e.g. iterrows, df.loc, df.apply). Pandas dataframes are also a well-supported type in python, and is handled
+                with no problem by scikit-learn.
+                <br><br>
+                The processing steps were:
+                <br><br>
+                1. Split up the monthly and quarterly date data
+                <br>Date data was split from "YYYY-month" or "YYYY-quarter" into "YYYY", then subsequent columns for each sub-division. This makes processing
+                later on much easier as data from each subdivision are later handled as features of that year.
+                <br><br>
+                2. Handle empty values
+                <br>Empty values are usually handled later on with the rest of the feature processing steps, but I had to handle them now as I was
+                planning to use linear regression to obtain more features from sub-divided years, and linear regression cannot handle null values. Null values
+                were simply replaced with the mean of the other values in the column.
+                <br><br>
+                3. Perform linear regression
+                <br>Let linear regression be y = Ax+b. In this case, the y values are the quarterly or monthly data in each year, the x value is the sub-division
+                of the y data in the year (ranging from 0 to 1). A linear regression is performed on each year and the "Direction" feature refers to the variable
+                A in (y=Ax+b), while the feature "correlation" refers to the coefficient of determination, giving the strength of the linear relationship between
+                x and y. The linear regression was performed using sklearn LinearRegression method.
+                <br><br>
+                After going in to do some simple data procesing myself (deleting columns etc.), the data is now ready for further processing.
+              </p>
+            </div>
+            <div class="post-part">
+              <h3>Step 3: Data Exploration</h3>
+              <p>
+                Now that the data has been prettified, it is time for some visualisation to gain insights on the data on hand. From here on, I will foxus on crude
+                birth rates as the predicted y value.
+                <br><br>
+                First, I combined all the features into one large features dataframe. I was initially considering adding polynomial features and performing PCA
+                to narrow down the feature space, but after performing train-test split, my number of data points and number of features became comaparable and I did not
+                want to risk having too many features.
+                <br><br>
+                Next, I looked at the correlations between the y data and each of the features. By using the pandas .coor() function, I obtained a list of
+                correlations.
+                <br><br>
+                <b>Crude birth rate</b>
+              </p>
+              <div class="code">
+                <pre class="command-line" data-user="kait" data-host="localhost" data-output="2-25">
+<code class="language-bash">python3 regression_methods.py
+value            1.000000
+overtime_mean    0.850188
+jobvac_mean      0.780938
+jobvac_std       0.737394
+jobvac_corr      0.626325
+overtime_std     0.589957
+cpi_corr         0.462497
+unemp_dir        0.253608
+labcost_dir      0.090970
+unemp_std        0.019510
+labcost_corr     0.010615
+labcost_std     -0.051549
+cpi_dir         -0.126641
+unemp_corr      -0.228851
+overtime_corr   -0.251386
+cpi_std         -0.264826
+overtime_dir    -0.418650
+labcost_mean    -0.440134
+unemp_mean      -0.516196
+jobvac_dir      -0.708656
+cpi_mean        -0.781216
+gdp_value       -0.837611
+year            -0.927946
+Name: value, dtype: float64</code>
+                </pre>
+              </div>
+              <p>
+                Here you can see that "year" is most highly correlated with the birth rate, which may present as a problem by creating a model that suggests that Singapore's
+                falling birth rate is inevitable. "Overtime_mean" is also highly correlated with crude birth rate, however there is the problem of correlation vs. causation,
+                and the causal effect between these two variables is unclear.
+                <br><br>
+                To gain greater insights, I picked 6 of the features most linearly correlated with crude birth rates and plotted them all against each other in a scatter plot:
+              </p>
+              <img src="img/crude-birth-rate_corr_scatter.png" alt="crude-birth-rate scatter plot">
+              <p>
+                From the scatter plot we can see that the relationship between "year" and birth rate more closely follows an exponential function, as well as with other factors
+                "gdp_value" and "cpi_mean". Thus, I performed an exponential decay function on these three features to hopefully give a better linear correlation between the
+                  features and the y value.
+              </p>
+              <div id="feattransimages">
+                <div class="img-container">
+                  <img src="img/testingtrans_year.png" alt="crude birth rate vs. year scatter">
+                  <img src="img/testingtrans_decay_year.png" alt="crude birth rate vs. year (decay) scatter">
+                </div>
+                <div class="img-container">
+                  <img src="img/testingtrans_cpi_mean.png" alt="crude birth rate vs. mean cpi scatter">
+                  <img src="img/testingtrans_decay_cpi_mean.png" alt="crude birth rate vs. mean cpi (decay) scatter">
+                </div>
+                <div class="img-container">
+                  <img src="img/testingtrans_gdp_value.png" alt="crude birth rate vs. gdp scatter">
+                  <img src="img/testingtrans_decay_gdp_value.png" alt="crude birth rate vs. gdp (decay) scatter">
+                </div>
+              </div>
+              <p>
+                After fitting the exponential function, the improvement looks marginal in the scatter plot, but the correlation values showed a small improvement and I decided to
+                just take what I have and move on to the transformation pipeline.
+              </p>
+              <div class="code">
+                <pre class="command-line" data-user="kait" data-host="localhost" data-output="2-30">
+<code class="language-bash">python3 regression_methods.py
+Correlation matrix for decay features:
+value              1.000000
+year_decay         0.989801
+gdp_value_decay    0.949187
+cpi_mean_decay     0.917802
+overtime_mean      0.850188
+jobvac_mean        0.780938
+jobvac_std         0.737394
+jobvac_corr        0.626325
+overtime_std       0.589957
+cpi_corr           0.462497
+unemp_dir          0.253608
+labcost_dir        0.090970
+unemp_std          0.019510
+labcost_corr       0.010615
+labcost_std       -0.051549
+cpi_dir           -0.126641
+unemp_corr        -0.228851
+overtime_corr     -0.251386
+cpi_std           -0.264826
+overtime_dir      -0.418650
+labcost_mean      -0.440134
+unemp_mean        -0.516196
+jobvac_dir        -0.708656
+cpi_mean          -0.781216
+gdp_value         -0.837611
+year              -0.927946
+Name: value, dtype: float64</code>
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <script src="javascript/prism.js"></script>
+  <script src="javascript/prism-command-line.js"></script>
+  <script src="javascript/prism-bash.js"></script>
+  </body>
+</html>

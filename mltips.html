@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="styles.css" rel="stylesheet" type="text/css" media="all">
+    <title>Python Machine Learning</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <header id="header">
+        <h1>Python Machine Learning</h1>
+        <h5>I have a website just to look cool.</h5>
+        <nav class="navigation">
+          <ul>
+            <li><a href="index.html">>Home</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li class="active"><a href="mltips.html">Machine Learning Tips and Tricks</a></li>
+            <li><a href="pythontips.html">Python Tips and Tricks</a></li>
+            <li><a href="sklearntips.html">Sklearn Tips and Tricks</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div id="content">
+        <div id="left-sidebar">
+          <p>Left Sidebar Content Goes Here</p>
+        </div>
+
+        <div id="right">
+          <div class="post-cards">
+            <div class="post-title">
+              <h2>K-fold vs. Leave One Out cross validation</h2>
+            </div>
+            <div class="post-part">
+              <p>
+                Both K-fold and Leave One Out (LOOC) cross validation methods are performed on the training set to estimate the performance of the
+                trained model on unseen data.
+                <br><br>K-fold cross validation has a single parameter called k that refers to the number of groups that a given data sample is to be split into (usually k=10).
+                K-fold CV splits the data randomly into k groups, and for each unique group, trains a regression model with that group as a hold out and all other groups
+                used as training data. The model is evaluated on the group that was held out, then discarded and the evaluation score retained. The performance of the model
+                is then calculated based on all the evaluation scores obtained. Each data point will thus have the opportunity to be used once in the hold-out set and k-1 times
+                in the training set.
+                <br><br>The LOOC works the same way as a K-fold CV where k=n.
+              </p>
+
+              <h3><u>Comparing K-fold and LOOC</u></h3>
+
+              <h4><i>Biases</i></h4>
+              <p>
+                K-fold CV gives a <b>pessimistically biased</b> estimate of performance as it limits the size of the training data, and most statistical models will improve
+                if the training set is made larger. The K-fold CV estimates the performance of a model trained on a dataset 100*(k-1)/k% of the available data, rather than
+                on 100% of it. So if cross-validation is performed to estimate performance, a model using 100% of the data for operational use will perform slightly better than
+                the cross-validation estimate suggests.
+                <br>Leave-one-out cross-validation is <b>approximately unbiased</b>, because the difference in size between the training set used in each fold and the entire dataset
+                is only a single data point.
+              </p>
+
+              <h4><i>Variance</i></h4>
+              <p>
+                LOOC tends to have a <b>high variance</b> as very different estimates will be obtained if the estimate is repeated with different initial samples of data from <thead>
+                same distribution, whereas K-fold has a relatively <b>lower variance</b>.
+                <br>
+                However, with a small dataset, the variance in fitting the model tends to be higher as it is more sensitive to any noise/sampling artifacts in the particular
+                training sample used. This means that k-fold cross-validation is likely to have a <b>high variance</b> if there is only a limited amount of data, as the size of the
+                training set will be smaller than for LOOCV.
+              </p>
+
+              <h4><i>Computation</i></h4>
+              <p>
+                LOOCV is <b>more computationally intensive</b> than K-fold CV.
+                <br><br>
+                As the error of the estimator is a combination of bias and variance, whether leave-one-out cross-validation is better than k-fold cross-validation depends on both
+                quantities (and also the computational budget of the project). For very small datasets, LOOCV is preferred.
+                <br><br>
+                <i>Source: <a href="https://stats.stackexchange.com/questions/154830/10-fold-cross-validation-vs-leave-one-out-cross-validation">https://stats.stackexchange.com/</a></i>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

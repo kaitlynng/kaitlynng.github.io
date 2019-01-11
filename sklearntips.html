@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="styles.css" rel="stylesheet" type="text/css" media="all">
+    <title>Python Machine Learning</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <header id="header">
+        <h1>Python Machine Learning</h1>
+        <h5>I have a website just to look cool.</h5>
+        <nav class="navigation">
+          <ul>
+            <li><a href="index.html">>Home</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="mltips.html">Machine Learning Tips and Tricks</a></li>
+            <li><a href="pythontips.html">Python Tips and Tricks</a></li>
+            <li class="active"><a href="sklearntips.html">Sklearn Tips and Tricks</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div id="content">
+        <div id="left-sidebar">
+          <p>Left Sidebar Content Goes Here</p>
+        </div>
+        <div id="right">
+          <div class="post-cards">
+            <div class="post-title">
+              <h2>"fit()" vs "transform()" vs "fit_transform()" in sklearn pipeline</h2>
+            </div>
+            <div class="post-part">
+              <p>
+                Some transformations performed on the training set of data are calculated using the training set e.g. mean and std of StandardScaler.
+                <br>However, these also have to be applied to the testing set (e.g. in cross-validation), or to newly obtained examples before forecast, using the same parameters (mean and std) used for the training set.
+                <br><br>Hence,
+              </p>
+              <ol>
+                <li>Sklearn's fit() just calculates the parameters (e.g. mean and std in case of StandardScaler) and saves them as an internal objects state.</li>
+                <li>The transform() method can be called afterwards to apply the transformation to a particular set of examples.</li>
+                <li>fit_transform() joins these two steps and is used for the initial fitting of parameters on the training set, and also returns a transformed set. Internally, it just calls first fit() and then transform() on the same data.</li>
+              </ol>
+              <p>
+                <i>Source: <a href="https://datascience.stackexchange.com/questions/12321/difference-between-fit-and-fit-transform-in-scikit-learn-models">https://datascience.stackexchange.com/</a></i>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
