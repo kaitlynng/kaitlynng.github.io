@@ -264,7 +264,7 @@ Error on training set for SVM sigmoid regression: 0.07307290024471638</code>
               <p>
                 It can be seen that the linear regression and decision tree regressor appear to overfit the training data quite
                 badly, resulting in an extremely small error. Further evaluation of the models are done with a Leave-One-Out cross
-                validation test (a comparison of LOOC and K-Out CV can be found on the Machine Learning Tips page) and errors are as
+                validation test (a comparison of LOOC and K-Fold CV can be found on the Machine Learning Tips page) and errors are as
                 shown:
               </p>
               <div class="code">
@@ -331,6 +331,66 @@ Standard deviation:  0.03629890887323988</code>
                 with the fine-tuning of the models.
               </p>
             </div>
+            <div class="post-part">
+              <h3>Step 6: Hypertuning Random Forest Regression</h3>
+              <p>
+                After choosing the best performing model, I went on to hypertune the free parameters of the model. From the
+                random forest regressor documentation in sklearn, the important features appear to be:
+              </p>
+              <ul>
+                <li>n_estimators: No. of decision trees in the forest</li>
+                <li>max_depth: Maximum depth of a tree</li>
+                <li>min_samples_split: Minimum number of samples required to split an internal node</li>
+                <li>min_samples_leaf: Minimum number of samples required to form a leaf</li>
+                <li>max_features: No. of features (relative to all the features) to consider when choosing the best split </li>
+                <li>bootstrap: Whether bootstrap samples are used when building trees</li>
+              </ul>
+              <p>
+                I first performed a random search through multiple test values for each parameter to narrow down the range of
+                values to be tested in detail later on, so as to reduce the time needed for training. At this stage, if a lot of
+                combinations are being tested, it is useful to set the search to "verbose" to track the progress of the search.
+                <br><br>
+                After obtaining the best params from the random search, I then performed a grid search to systematically obtain the
+                best combination of parameters to optimise the cross validation score. Note that the nmber of combinations to search
+                are multipled for each parameter, so n_combinations = n_1 * n_2 * n_3 * ... * n_x, where n refers to the number of values
+                tested for each parameter for x parameters. A "verbose" setting is also useful here to ensure that the search is proceeding
+                correctly.
+                <br><br>
+                The best parameters obtained from the grid search are shown below, as well as the improvement in model performance (base model
+                is the random forest regression conducted with default parameters). The hypertuning only yielded an improvement in performance of
+                0.92%, showing that hypertuning does not significantly improve the accuracy of the model. Instead, other factors like feature
+                selection and processing and amount of data may play a larger role in improving the model.
+              </p>
+              <div class="code">
+                <pre class="command-line" data-user="kait" data-host="localhost" data-output="2-20">
+<code class="language-bash">python3 -c 'import regression_methods; evaluateTest(rf_grid_best_params)'
+best params: {'max_depth': 110, 'max_features': 'sqrt', 'n_estimators': 30, 'min_samples_split': 7, 'bootstrap': True, 'min_samples_leaf': 1}
+
+Model Performance (base model)
+Average Error: 1.4406
+Accuracy = 86.34%
+
+Model Performance (best model)
+Average Error: 1.3449
+Accuracy = 87.26%
+</code></pre>
+              </div>
+              <p>
+                Next part.
+              </p>
+              <div class="code">
+                <pre class="command-line" data-user="kait" data-host="localhost" data-output="2-20">
+<code class="language-bash">python3 anaylse.py
+best params: {'max_depth': 110, 'max_features': 'sqrt', 'n_estimators': 30, 'min_samples_split': 7, 'bootstrap': True, 'min_samples_leaf': 1}
+
+Model Performance
+Average Error: 0.2073
+Accuracy = 94.74%
+</code></pre>
+                <img src="img/learning-curve-random-forest.png" alt="Learning Curve (Random Forest Regressor)">
+              </div>
+            </div>
+    
 
           </div>
         </div>
